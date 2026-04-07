@@ -20,20 +20,23 @@ public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "encryptedContent", nullable = false, columnDefinition = "TEXT")
     private String encryptedContent;
+    @Column(name = "sent_at", nullable = false)
     private LocalDateTime sentAt;
-    private boolean delivered;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(name = "is_read", nullable = false)
+    private boolean isRead = false;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "sender_id", nullable = false)
     private User sender;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "receiver_id", nullable = false)
     private User receiver;
 
-    public Message(String encryptedContent, LocalDateTime sentAt, boolean delivered, User sender, User receiver) {
+    public Message(String encryptedContent, LocalDateTime sentAt, User sender, User receiver) {
         this.encryptedContent = encryptedContent;
         this.sentAt = sentAt;
-        this.delivered = delivered;
+        this.isRead = false;
         this.sender = sender;
         this.receiver = receiver;
     }
