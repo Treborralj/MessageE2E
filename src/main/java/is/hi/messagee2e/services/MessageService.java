@@ -1,5 +1,11 @@
 package is.hi.messagee2e.services;
 
+import is.hi.messagee2e.dto.request.SendMessageRequest;
+import is.hi.messagee2e.dto.response.MessageResponse;
+import org.springframework.security.core.Authentication;
+
+import java.util.List;
+
 /******************************************************************************
  * @author Róbert A. Jack
  * Tölvupóstur: ral9@hi.is
@@ -7,4 +13,9 @@ package is.hi.messagee2e.services;
  *
  *****************************************************************************/
 public interface MessageService {
+    public MessageResponse sendMessage(SendMessageRequest request, Authentication authentication);
+
+    public List<MessageResponse> getInbox(Authentication authentication);
+
+    public List<MessageResponse> getConversation(int otherUserId, Authentication authentication);
 }
