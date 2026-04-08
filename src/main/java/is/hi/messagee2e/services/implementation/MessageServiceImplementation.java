@@ -1,6 +1,7 @@
 package is.hi.messagee2e.services.implementation;
 
 import is.hi.messagee2e.dto.request.SendMessageRequest;
+import is.hi.messagee2e.dto.response.ConversationSummaryResponse;
 import is.hi.messagee2e.dto.response.MessageResponse;
 import is.hi.messagee2e.persistence.entities.Message;
 import is.hi.messagee2e.persistence.entities.User;
@@ -13,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /******************************************************************************
  * @author Róbert A. Jack
@@ -90,6 +93,44 @@ public class MessageServiceImplementation implements MessageService {
         }
 
         return conversation.stream().map(this::mapToResponse).toList();
+    }
+
+    @Override
+    public List<ConversationSummaryResponse> getConversationSummaries(Authentication authentication) {
+        User currentUser = userRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<Message> allMessages = messageRepository.findAllMessagesForUser(currentUser.getId());
+        Map<String, ConversationSummaryResponse> conversationMap = new LinkedHashMap<>();
+
+        for(Message message : allMessages){
+            User otherUser;
+            if(message.getSender().getId() == currentUser.getId()){
+                otherUser = message.getReceiver();
+            } else{
+                otherUser = message.getSender();
+            }
+            String otherUsersUsername = otherUser.getUsername();
+            if (!conversationMap.containsKey(otherUsersUsername)) {
+                ConversationSummaryResponse summary = new ConversationSummaryResponse();
+                summary.setOtherUsersUsername(otherUsersUsername);
+                summary.setLastMessageEncryptedContent(message.getEncryptedContent());
+                summary.setLastMessageSentAt(message.getSentAt());
+                summary.setLastMessageRead(message.isRead());
+                summary.setLastMessageSentByCurrentUser(
+                        message.getSender().getId() == currentUser.getId()
+                );
+                summary.setUnreadCount(0);
+
+                conversationMap.put(otherUsersUsername, summary);
+            }
+            if(message.getSender().getId() == otherUser.getId()
+            && message.getReceiver().getId() == currentUser.getId()
+            && !message.isRead()){
+                ConversationSummaryResponse summary = conversationMap.get(otherUsersUsername);
+            }
+        }
+        return new ArrayList<>(conversationMap.values());
     }
 
     private MessageResponse mapToResponse(Message message){
