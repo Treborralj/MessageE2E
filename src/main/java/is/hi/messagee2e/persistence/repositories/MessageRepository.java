@@ -34,4 +34,14 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
     """)
     List<Message> findConversation(@Param("user1Id") int user1Id,
                                    @Param("user2Id") int user2Id);
+
+    @Query("""
+    SELECT m
+    FROM Message m
+    JOIN FETCH m.sender
+    JOIN FETCH m.receiver
+    WHERE m.sender.id = :userId OR m.receiver.id = :userId
+    ORDER BY m.sentAt DESC
+""")
+    List<Message> findAllMessagesForUser(@Param("userId") int userId);
 }
