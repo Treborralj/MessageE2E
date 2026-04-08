@@ -4,6 +4,7 @@ import is.hi.messagee2e.dto.request.LoginRequest;
 import is.hi.messagee2e.dto.request.SignupRequest;
 import is.hi.messagee2e.dto.response.AuthenticationResponse;
 import is.hi.messagee2e.services.AuthenticationService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,12 +28,12 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<AuthenticationResponse> signup(@RequestBody SignupRequest request){
+    public ResponseEntity<AuthenticationResponse> signup(@Valid @RequestBody SignupRequest request){
         return ResponseEntity.ok(authenticationService.signup(request));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginRequest request){
+    public ResponseEntity<AuthenticationResponse> login(@Valid @RequestBody LoginRequest request){
         return ResponseEntity.ok(authenticationService.login(request));
     }
 }
