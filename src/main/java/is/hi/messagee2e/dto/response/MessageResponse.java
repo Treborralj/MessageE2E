@@ -17,7 +17,7 @@ public class MessageResponse {
     private int id;
     private int senderId;
     private String senderUsername;
-    private String ecnryptedContent;
+    private String encryptedContent;
     private LocalDateTime sentAt;
     private boolean isRead;
 
@@ -27,13 +27,13 @@ public class MessageResponse {
     public MessageResponse(int id,
                            int senderId,
                            String senderUsername,
-                           String ecnryptedContent,
+                           String encryptedContent,
                            LocalDateTime sentAt,
                            boolean isRead) {
         this.id = id;
         this.senderId = senderId;
         this.senderUsername = senderUsername;
-        this.ecnryptedContent = ecnryptedContent;
+        this.encryptedContent = encryptedContent;
         this.sentAt = sentAt;
         this.isRead = isRead;
     }

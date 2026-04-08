@@ -17,5 +17,5 @@ public interface MessageService {
 
     public List<MessageResponse> getInbox(Authentication authentication);
 
-    public List<MessageResponse> getConversation(int otherUserId, Authentication authentication);
+    public List<MessageResponse> getConversation(String otherUsersUsername, Authentication authentication);
 }

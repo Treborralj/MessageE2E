@@ -38,10 +38,10 @@ public class MessageController {
         return ResponseEntity.ok(messageService.getInbox(authentication));
     }
 
-    @GetMapping("conversation/{userId}")
-    public ResponseEntity<List<MessageResponse>> getConversation(@PathVariable int userId,
+    @GetMapping("conversation/{username}")
+    public ResponseEntity<List<MessageResponse>> getConversation(@PathVariable String username,
                                                                  Authentication authentication){
-        return ResponseEntity.ok(messageService.getConversation(userId, authentication));
+        return ResponseEntity.ok(messageService.getConversation(username, authentication));
     }
 
 }
