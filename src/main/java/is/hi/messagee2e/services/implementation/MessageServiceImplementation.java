@@ -57,25 +57,32 @@ public class MessageServiceImplementation implements MessageService {
         User currentUser = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return messageRepository.findByReceiverIdOrderBySentAtAsc(currentUser.getId())
+        return messageRepository.findInboxMessages(currentUser.getId())
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
     }
 
-    public List<MessageResponse> getConversation(int otherUserId, Authentication authentication){
+    public List<MessageResponse> getConversation(String otherUsersUsername, Authentication authentication){
         String username = authentication.getName();
 
         User currentUser = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        userRepository.findById(otherUserId)
+        User otherUser = userRepository.findByUsername(otherUsersUsername)
                 .orElseThrow(() -> new RuntimeException("Other user not found"));
 
-        return messageRepository.findConversation(currentUser.getId(), otherUserId)
-                .stream()
-                .map(this::mapToResponse)
-                .toList();
+        List<Message> conversation = messageRepository.findConversation(currentUser.getId(), otherUser.getId());
+
+        for(Message message : conversation){
+            if(message.getSender().getId() == otherUser.getId()
+                    && message.getReceiver().getId() == currentUser.getId()
+                    && !message.isRead()){
+                message.setRead(true);
+            }
+        }
+
+        return conversation.stream().map(this::mapToResponse).toList();
     }
 
     private MessageResponse mapToResponse(Message message){
