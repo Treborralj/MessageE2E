@@ -1,6 +1,5 @@
-package is.hi.messagee2e.dto.request;
+package is.hi.messagee2e.dto.response;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,12 +11,15 @@ import lombok.Setter;
  *****************************************************************************/
 @Getter
 @Setter
-public class LoginRequest {
-    @NotBlank(message = "Username is required")
+public class PublicKeyResponse {
     private String username;
-    @NotBlank(message = "Password is required")
-    private String password;
+    private String publicKey;
 
-    public LoginRequest() {
+    public PublicKeyResponse() {
+    }
+
+    public PublicKeyResponse(String username, String publicKey) {
+        this.username = username;
+        this.publicKey = publicKey;
     }
 }

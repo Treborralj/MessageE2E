@@ -1,5 +1,6 @@
 package is.hi.messagee2e.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +13,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SendMessageRequest {
+    @NotBlank(message = "Receiver username is required")
     private String receiverUsername;
+    @NotBlank(message = "Encrypted content is required")
     private String encryptedContent;
 
     public SendMessageRequest() {

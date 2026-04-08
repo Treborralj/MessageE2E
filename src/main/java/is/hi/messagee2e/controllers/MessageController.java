@@ -3,6 +3,7 @@ package is.hi.messagee2e.controllers;
 import is.hi.messagee2e.dto.request.SendMessageRequest;
 import is.hi.messagee2e.dto.response.MessageResponse;
 import is.hi.messagee2e.services.MessageService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -28,7 +29,7 @@ public class MessageController {
     }
 
     @PostMapping("/send")
-    public ResponseEntity<MessageResponse> sendMessage(@RequestBody SendMessageRequest request,
+    public ResponseEntity<MessageResponse> sendMessage(@Valid @RequestBody SendMessageRequest request,
                                                        Authentication authentication){
         return ResponseEntity.ok(messageService.sendMessage(request, authentication));
     }

@@ -7,11 +7,12 @@ import is.hi.messagee2e.persistence.entities.User;
 import is.hi.messagee2e.persistence.repositories.MessageRepository;
 import is.hi.messagee2e.persistence.repositories.UserRepository;
 import is.hi.messagee2e.services.MessageService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /******************************************************************************
@@ -21,6 +22,7 @@ import java.util.List;
  *
  *****************************************************************************/
 @Service
+@Transactional
 public class MessageServiceImplementation implements MessageService {
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
@@ -74,12 +76,17 @@ public class MessageServiceImplementation implements MessageService {
 
         List<Message> conversation = messageRepository.findConversation(currentUser.getId(), otherUser.getId());
 
+        List<Message> messageToUpdate = new ArrayList<>();
         for(Message message : conversation){
             if(message.getSender().getId() == otherUser.getId()
                     && message.getReceiver().getId() == currentUser.getId()
                     && !message.isRead()){
                 message.setRead(true);
+                messageToUpdate.add(message);
             }
+        }
+        if(!messageToUpdate.isEmpty()){
+            messageRepository.saveAll(messageToUpdate);
         }
 
         return conversation.stream().map(this::mapToResponse).toList();
