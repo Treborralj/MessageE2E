@@ -19,7 +19,7 @@ public class MessageResponse {
     private String senderUsername;
     private String encryptedContent;
     private LocalDateTime sentAt;
-    private boolean isRead;
+    private boolean read;
 
     public MessageResponse() {
     }
@@ -29,12 +29,12 @@ public class MessageResponse {
                            String senderUsername,
                            String encryptedContent,
                            LocalDateTime sentAt,
-                           boolean isRead) {
+                           boolean read) {
         this.id = id;
         this.senderId = senderId;
         this.senderUsername = senderUsername;
         this.encryptedContent = encryptedContent;
         this.sentAt = sentAt;
-        this.isRead = isRead;
+        this.read = read;
     }
 }
