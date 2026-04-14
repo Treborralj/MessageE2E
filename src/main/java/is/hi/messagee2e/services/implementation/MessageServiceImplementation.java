@@ -128,6 +128,7 @@ public class MessageServiceImplementation implements MessageService {
             && message.getReceiver().getId() == currentUser.getId()
             && !message.isRead()){
                 ConversationSummaryResponse summary = conversationMap.get(otherUsersUsername);
+                summary.setUnreadCount(summary.getUnreadCount() + 1);
             }
         }
         return new ArrayList<>(conversationMap.values());
