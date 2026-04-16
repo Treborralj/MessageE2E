@@ -11,6 +11,7 @@ import is.hi.messagee2e.services.MessageService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,13 +30,14 @@ import java.util.Map;
 public class MessageServiceImplementation implements MessageService {
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public MessageServiceImplementation(MessageRepository messageReposito, UserRepository userRepository) {
         this.messageRepository = messageReposito;
         this.userRepository = userRepository;
     }
 
-    public MessageResponse sendMessage(SendMessageRequest request, Authentication authentication){
+    public MessageResponse sendMessage(SendMessageRequest request, Authentication authentication) {
         String senderUsername = authentication.getName();
 
         User sender = userRepository.findByUsername(senderUsername)
@@ -44,19 +46,29 @@ public class MessageServiceImplementation implements MessageService {
         User receiver = userRepository.findByUsername(request.getReceiverUsername())
                 .orElseThrow(() -> new RuntimeException("Receiver not found"));
 
-        if (request.getEncryptedContent() == null || request.getEncryptedContent().isBlank()){
+        if (request.getEncryptedContent() == null) {
             throw new RuntimeException("Message content cannot be empty");
         }
 
-        Message message = new Message(request.getEncryptedContent(), LocalDateTime.now(), sender, receiver);
+        String encryptedContentJson;
+        try {
+            encryptedContentJson = objectMapper.writeValueAsString(request.getEncryptedContent());
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to serialize encrypted content", e);
+        }
+
+        if (encryptedContentJson.isBlank()) {
+            throw new RuntimeException("Message content cannot be empty");
+        }
+
+        Message message = new Message(encryptedContentJson, LocalDateTime.now(), sender, receiver);
 
         Message savedMessage = messageRepository.save(message);
 
         return mapToResponse(savedMessage);
-
     }
 
-    public List<MessageResponse> getInbox(Authentication authentication){
+    public List<MessageResponse> getInbox(Authentication authentication) {
         String username = authentication.getName();
 
         User currentUser = userRepository.findByUsername(username)
@@ -68,7 +80,7 @@ public class MessageServiceImplementation implements MessageService {
                 .toList();
     }
 
-    public List<MessageResponse> getConversation(String otherUsersUsername, Authentication authentication){
+    public List<MessageResponse> getConversation(String otherUsersUsername, Authentication authentication) {
         String username = authentication.getName();
 
         User currentUser = userRepository.findByUsername(username)
@@ -80,15 +92,16 @@ public class MessageServiceImplementation implements MessageService {
         List<Message> conversation = messageRepository.findConversation(currentUser.getId(), otherUser.getId());
 
         List<Message> messageToUpdate = new ArrayList<>();
-        for(Message message : conversation){
-            if(message.getSender().getId() == otherUser.getId()
+        for (Message message : conversation) {
+            if (message.getSender().getId() == otherUser.getId()
                     && message.getReceiver().getId() == currentUser.getId()
-                    && !message.isRead()){
+                    && !message.isRead()) {
                 message.setRead(true);
                 messageToUpdate.add(message);
             }
         }
-        if(!messageToUpdate.isEmpty()){
+
+        if (!messageToUpdate.isEmpty()) {
             messageRepository.saveAll(messageToUpdate);
         }
 
@@ -103,14 +116,16 @@ public class MessageServiceImplementation implements MessageService {
         List<Message> allMessages = messageRepository.findAllMessagesForUser(currentUser.getId());
         Map<String, ConversationSummaryResponse> conversationMap = new LinkedHashMap<>();
 
-        for(Message message : allMessages){
+        for (Message message : allMessages) {
             User otherUser;
-            if(message.getSender().getId() == currentUser.getId()){
+            if (message.getSender().getId() == currentUser.getId()) {
                 otherUser = message.getReceiver();
-            } else{
+            } else {
                 otherUser = message.getSender();
             }
+
             String otherUsersUsername = otherUser.getUsername();
+
             if (!conversationMap.containsKey(otherUsersUsername)) {
                 ConversationSummaryResponse summary = new ConversationSummaryResponse();
                 summary.setOtherUsersUsername(otherUsersUsername);
@@ -124,17 +139,19 @@ public class MessageServiceImplementation implements MessageService {
 
                 conversationMap.put(otherUsersUsername, summary);
             }
-            if(message.getSender().getId() == otherUser.getId()
-            && message.getReceiver().getId() == currentUser.getId()
-            && !message.isRead()){
+
+            if (message.getSender().getId() == otherUser.getId()
+                    && message.getReceiver().getId() == currentUser.getId()
+                    && !message.isRead()) {
                 ConversationSummaryResponse summary = conversationMap.get(otherUsersUsername);
                 summary.setUnreadCount(summary.getUnreadCount() + 1);
             }
         }
+
         return new ArrayList<>(conversationMap.values());
     }
 
-    private MessageResponse mapToResponse(Message message){
+    private MessageResponse mapToResponse(Message message) {
         return new MessageResponse(
                 message.getId(),
                 message.getSender().getId(),
