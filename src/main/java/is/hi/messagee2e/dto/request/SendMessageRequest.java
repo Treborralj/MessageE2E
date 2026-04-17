@@ -16,9 +16,18 @@ import lombok.Setter;
 public class SendMessageRequest {
     @NotBlank(message = "Receiver username is required")
     private String receiverUsername;
-    @Valid
-    @NotBlank(message = "Encrypted content is required")
-    private EncryptedMessagePayload encryptedContent;
+
+    @NotBlank(message = "Sender AES key is required")
+    private String encryptedAesKeyForSender;
+
+    @NotBlank(message = "Receiver AES key is required")
+    private String encryptedAesKeyForReceiver;
+
+    @NotBlank(message = "IV is required")
+    private String iv;
+
+    @NotBlank(message = "Ciphertext is required")
+    private String ciphertext;
 
     public SendMessageRequest() {
     }

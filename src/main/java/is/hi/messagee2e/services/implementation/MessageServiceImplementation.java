@@ -46,13 +46,18 @@ public class MessageServiceImplementation implements MessageService {
         User receiver = userRepository.findByUsername(request.getReceiverUsername())
                 .orElseThrow(() -> new RuntimeException("Receiver not found"));
 
-        if (request.getEncryptedContent() == null) {
+        if (request.getCiphertext() == null || request.getCiphertext().isBlank()) {
             throw new RuntimeException("Message content cannot be empty");
         }
 
         String encryptedContentJson;
         try {
-            encryptedContentJson = objectMapper.writeValueAsString(request.getEncryptedContent());
+            Map<String, String> payloadMap = new LinkedHashMap<>();
+            payloadMap.put("encryptedAesKeyForSender", request.getEncryptedAesKeyForSender());
+            payloadMap.put("encryptedAesKeyForReceiver", request.getEncryptedAesKeyForReceiver());
+            payloadMap.put("iv", request.getIv());
+            payloadMap.put("ciphertext", request.getCiphertext());
+            encryptedContentJson = objectMapper.writeValueAsString(payloadMap);
         } catch (Exception e) {
             throw new RuntimeException("Failed to serialize encrypted content", e);
         }
