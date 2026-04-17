@@ -29,7 +29,7 @@ public class MessageController {
     }
 
     @PostMapping("/send")
-    public ResponseEntity<MessageResponse> sendMessage(@Valid @RequestBody SendMessageRequest request,
+    public ResponseEntity<MessageResponse> sendMessage(@RequestBody SendMessageRequest request,
                                                        Authentication authentication){
         return ResponseEntity.ok(messageService.sendMessage(request, authentication));
     }
