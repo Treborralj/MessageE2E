@@ -6,8 +6,8 @@ import lombok.Setter;
 
 /******************************************************************************
  * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing : Entity class for users.
+ * e-mail: ral9@hi.is
+ * Description: Entity representing a user.
  *
  *****************************************************************************/
 @Setter

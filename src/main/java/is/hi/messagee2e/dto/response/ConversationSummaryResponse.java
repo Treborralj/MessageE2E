@@ -7,8 +7,9 @@ import java.time.LocalDateTime;
 
 /******************************************************************************
  * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing : 
+ * e-mail: ral9@hi.is
+ * Description: DTO representing summary information about the last messages sent
+ *              in a conversation.
  *
  *****************************************************************************/
 @Getter

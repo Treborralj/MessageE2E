@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 /******************************************************************************
  * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing : Controller for handling user details.
+ * e-mail: ral9@hi.is
+ * Description: Controller for handling user related API requests.
  *
  *****************************************************************************/
 @RestController
@@ -26,11 +26,11 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<String> me(Authentication authentication){
-        return ResponseEntity.ok("Hello " + authentication.getName());
-    }
-
+    /**
+     * Returns the public key of the specified user.
+     * @param username the username whose public key is requested
+     * @return a response containing the user's public key
+     */
     @GetMapping("/public-key/{username}")
     public ResponseEntity<PublicKeyResponse> getPublicKey(@PathVariable String username){
         return ResponseEntity.ok(userService.getPublicKeyByUsername(username));

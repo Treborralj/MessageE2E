@@ -21,8 +21,9 @@ import java.util.Map;
 
 /******************************************************************************
  * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing : 
+ * e-mail: ral9@hi.is
+ * Description: Implemetns the sendMessage, getConversation and
+ *              getConversationSummaries functions.
  *
  *****************************************************************************/
 @Service
@@ -37,7 +38,12 @@ public class MessageServiceImplementation implements MessageService {
         this.userRepository = userRepository;
     }
 
-    public MessageResponse sendMessage(SendMessageRequest request, Authentication authentication) {
+    /**
+     * Stores an encrypted message sent by the authenticated user.
+     * @param request the encrypted message and related data
+     * @param authentication the authentication information of the current user
+     */
+    public void sendMessage(SendMessageRequest request, Authentication authentication) {
         String senderUsername = authentication.getName();
 
         User sender = userRepository.findByUsername(senderUsername)
@@ -68,23 +74,15 @@ public class MessageServiceImplementation implements MessageService {
 
         Message message = new Message(encryptedContentJson, LocalDateTime.now(), sender, receiver);
 
-        Message savedMessage = messageRepository.save(message);
-
-        return mapToResponse(savedMessage);
+        messageRepository.save(message);
     }
 
-    public List<MessageResponse> getInbox(Authentication authentication) {
-        String username = authentication.getName();
-
-        User currentUser = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        return messageRepository.findInboxMessages(currentUser.getId())
-                .stream()
-                .map(this::mapToResponse)
-                .toList();
-    }
-
+    /**
+     * Returns the conversation between the authenticated user and another user.
+     * @param otherUsersUsername the username of the other user.
+     * @param authentication the authentication information of the current user
+     * @return a list of all messages exchanged between the users
+     */
     public List<MessageResponse> getConversation(String otherUsersUsername, Authentication authentication) {
         String username = authentication.getName();
 
@@ -113,6 +111,12 @@ public class MessageServiceImplementation implements MessageService {
         return conversation.stream().map(this::mapToResponse).toList();
     }
 
+    /**
+     * Returns a list of conversation summaries of all conversations the user is
+     * a part of.
+     * @param authentication the authentication information of the current user
+     * @return a list of conversation summaries
+     */
     @Override
     public List<ConversationSummaryResponse> getConversationSummaries(Authentication authentication) {
         User currentUser = userRepository.findByUsername(authentication.getName())
@@ -156,6 +160,9 @@ public class MessageServiceImplementation implements MessageService {
         return new ArrayList<>(conversationMap.values());
     }
 
+    /**
+     * Converts a message entity into a response DTO.
+     */
     private MessageResponse mapToResponse(Message message) {
         return new MessageResponse(
                 message.getId(),

@@ -18,7 +18,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 /******************************************************************************
  * @author Róbert A. Jack
  * Tölvupóstur: ral9@hi.is
- * Lýsing : 
+ * Lýsing : Configures Spring Security for the application, including JWT
+ *          authentication, stateless sessions, and password encoding.
  *
  *****************************************************************************/
 @Configuration
@@ -32,6 +33,12 @@ public class SecurityConfig {
         this.customUserDetailsService = customUserDetailsService;
     }
 
+    /**
+     * Configures the application's HTTP security rules.
+     * @param http the HttpSecurity object used to configure web security
+     * @return the configured SecurityFilterChain
+     * @throws Exception if the security configuration fails
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http.csrf(AbstractHttpConfigurer::disable)
@@ -44,6 +51,11 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Creates the authentication provider used for username and password
+     * authentication.
+     * @return the configured authentication provider
+     */
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider =
@@ -52,11 +64,21 @@ public class SecurityConfig {
         return authProvider;
     }
 
+    /**
+     * Exposes the authentication manager used during login.
+     * @param config the authentication configuration provided by spring
+     * @return the application's authentication manager
+     * @throws Exception if the authentication manager cannot be created
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception{
         return config.getAuthenticationManager();
     }
 
+    /**
+     * Creates the password encoder used to hash passwords
+     * @return the password encoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();

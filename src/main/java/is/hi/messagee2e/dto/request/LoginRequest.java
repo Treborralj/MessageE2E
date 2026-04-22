@@ -6,8 +6,8 @@ import lombok.Setter;
 
 /******************************************************************************
  * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing : 
+ * e-mail: ral9@hi.is
+ * Description: DTO containing the credentials required to authenticate a user.
  *
  *****************************************************************************/
 @Getter

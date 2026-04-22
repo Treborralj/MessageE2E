@@ -4,7 +4,6 @@ import is.hi.messagee2e.dto.request.SendMessageRequest;
 import is.hi.messagee2e.dto.response.ConversationSummaryResponse;
 import is.hi.messagee2e.dto.response.MessageResponse;
 import is.hi.messagee2e.services.MessageService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -14,8 +13,9 @@ import java.util.List;
 
 /******************************************************************************
  * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing : Controller for handling messages.
+ * e-mail: ral9@hi.is
+ * Description : Controller for handling API requests related to sending
+ *               and receiving messages.
  *
  *****************************************************************************/
 @RestController
@@ -28,23 +28,36 @@ public class MessageController {
         this.messageService = messageService;
     }
 
+    /**
+     * Stores an encrypted message sent by an authenticated user.
+     * @param request the encrypted message and related data
+     * @param authentication the authentication information of the current user
+     * @return HTTP 200 ok if the message was successfully stored.
+     */
     @PostMapping("/send")
-    public ResponseEntity<MessageResponse> sendMessage(@RequestBody SendMessageRequest request,
+    public ResponseEntity<Void> sendMessage(@RequestBody SendMessageRequest request,
                                                        Authentication authentication){
-        return ResponseEntity.ok(messageService.sendMessage(request, authentication));
+        messageService.sendMessage(request, authentication);
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/inbox")
-    public ResponseEntity<List<MessageResponse>> getInbox(Authentication authentication){
-        return ResponseEntity.ok(messageService.getInbox(authentication));
-    }
-
+    /**
+     * Returns the conversation between the authenticated user and another user.
+     * @param username the username of the other participant
+     * @param authentication the authentication information of the current user
+     * @return a list of messages exchanged between the two users
+     */
     @GetMapping("conversation/{username}")
     public ResponseEntity<List<MessageResponse>> getConversation(@PathVariable String username,
                                                                  Authentication authentication){
         return ResponseEntity.ok(messageService.getConversation(username, authentication));
     }
 
+    /**
+     * Returns conversation summaries for the authenticated user.
+     * @param authentication the authentication information of the current user
+     * @return a list of conversation summaries
+     */
     @GetMapping("conversations")
     public ResponseEntity<List<ConversationSummaryResponse>> getConversationsSummaries(Authentication authentication){
         return ResponseEntity.ok(messageService.getConversationSummaries(authentication));

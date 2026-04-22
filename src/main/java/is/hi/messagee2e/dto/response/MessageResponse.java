@@ -7,8 +7,8 @@ import java.time.LocalDateTime;
 
 /******************************************************************************
  * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing : 
+ * e-mail: ral9@hi.is
+ * Description: DTO representing a message that is returned to the client.
  *
  *****************************************************************************/
 @Getter

@@ -5,8 +5,8 @@ import lombok.Setter;
 
 /******************************************************************************
  * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing : 
+ * e-mail: ral9@hi.is
+ * Description: DTO containing a token that returns after successful authentication
  *
  *****************************************************************************/
 @Getter

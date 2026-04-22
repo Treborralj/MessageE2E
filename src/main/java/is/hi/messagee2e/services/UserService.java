@@ -4,11 +4,11 @@ import is.hi.messagee2e.dto.response.PublicKeyResponse;
 
 /******************************************************************************
  * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing : 
+ * e-mail: ral9@hi.is
+ * Description: Defines user-related business functions.
  *
  *****************************************************************************/
 public interface UserService {
     PublicKeyResponse getPublicKeyByUsername(String username);
-    String getCurrentUsername(String username);
+
 }

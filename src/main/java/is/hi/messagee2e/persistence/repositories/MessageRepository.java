@@ -9,19 +9,11 @@ import java.util.List;
 
 /******************************************************************************
  * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing : 
+ * e-mail: ral9@hi.is
+ * Description: Repository for accessing information on messages.
  *
  *****************************************************************************/
 public interface MessageRepository extends JpaRepository<Message, Integer> {
-    @Query("""
-    SELECT m
-    FROM Message m
-    JOIN FETCH m.sender
-    WHERE m.receiver.id = :receiverId
-    ORDER BY m.sentAt ASC
-""")
-    List<Message> findInboxMessages(@Param("receiverId") int receiverId);
 
     @Query("""
         SELECT m

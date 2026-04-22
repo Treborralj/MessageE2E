@@ -6,12 +6,13 @@ import is.hi.messagee2e.dto.response.AuthenticationResponse;
 
 /******************************************************************************
  * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing : 
+ * e-mail: ral9@hi.is
+ * Description: Defines authentication related business functions.
  *
  *****************************************************************************/
 public interface AuthenticationService {
 
     public AuthenticationResponse signup(SignupRequest request);
+
     public AuthenticationResponse login(LoginRequest request);
 }

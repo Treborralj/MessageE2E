@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 /******************************************************************************
  * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing : Controller for handling authentication.
+ * e-mail: ral9@hi.is
+ * Description : Controller that handles authentication related API requests
+ *               like signup and login.
  *
  *****************************************************************************/
 @RestController
@@ -27,11 +28,21 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
     }
 
+    /**
+     * Register a new user.
+     * @param request the signup data received from the client
+     * @return a response containing the generated JWT token
+     */
     @PostMapping("/signup")
     public ResponseEntity<AuthenticationResponse> signup(@Valid @RequestBody SignupRequest request){
         return ResponseEntity.ok(authenticationService.signup(request));
     }
 
+    /**
+     * Authenticates an existing user.
+     * @param request the login credentials received from the client
+     * @return a response containing the generated JWT token.
+     */
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@Valid @RequestBody LoginRequest request){
         return ResponseEntity.ok(authenticationService.login(request));

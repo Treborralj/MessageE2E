@@ -9,14 +9,12 @@ import java.util.List;
 
 /******************************************************************************
  * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing : 
+ * e-mail: ral9@hi.is
+ * Description: Defines message-related business functions.
  *
  *****************************************************************************/
 public interface MessageService {
-    public MessageResponse sendMessage(SendMessageRequest request, Authentication authentication);
-
-    public List<MessageResponse> getInbox(Authentication authentication);
+    public void sendMessage(SendMessageRequest request, Authentication authentication);
 
     public List<MessageResponse> getConversation(String otherUsersUsername, Authentication authentication);
 

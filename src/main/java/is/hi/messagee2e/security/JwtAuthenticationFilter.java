@@ -15,8 +15,9 @@ import java.io.IOException;
 
 /******************************************************************************
  * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing : 
+ * e-mail: ral9@hi.is
+ * Description: Validates JWT tokens from incoming requests and sets the
+ *              security context.
  *
  *****************************************************************************/
 @Component
@@ -30,23 +31,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.customUserDetailsService = customUserDetailsService;
     }
 
+    /**
+     * Processes each incoming request, validates the JWT token if present, and
+     * sets the authentication in the security context.
+     * @param request the incoming HTTP request
+     * @param response the outgoing HTTP response
+     * @param filterChain the remaining filter chain
+     * @throws ServletException if the filter fails due to a servlet error
+     * @throws IOException if an input or output error occurs during filtering
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
 
-        if(authHeader == null || !authHeader.startsWith("Bearer ")){
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
         String token = authHeader.substring(7);
         String username = jwtService.extractUsername(token);
 
-        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
 
-            if(jwtService.isTokenValid(token, userDetails.getUsername())){
+            if (jwtService.isTokenValid(token, userDetails.getUsername())) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,

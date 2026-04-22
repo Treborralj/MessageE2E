@@ -6,8 +6,8 @@ import lombok.Setter;
 
 /******************************************************************************
  * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing : 
+ * e-mail: ral9@hi.is
+ * Descritpion: DTO containing the data required to create a new user account.
  *
  *****************************************************************************/
 @Getter

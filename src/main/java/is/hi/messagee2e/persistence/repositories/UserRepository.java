@@ -7,8 +7,8 @@ import java.util.Optional;
 
 /******************************************************************************
  * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing : 
+ * e-mail: ral9@hi.is
+ * Description: Repository for accessing user information.
  *
  *****************************************************************************/
 public interface UserRepository extends JpaRepository<User, Integer> {

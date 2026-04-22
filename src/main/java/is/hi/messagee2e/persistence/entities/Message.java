@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 
 /******************************************************************************
  * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing : Entity class for messages.
+ * e-mail: ral9@hi.is
+ * Description: Entity representing an encrypted message
  *
  *****************************************************************************/
 @Setter

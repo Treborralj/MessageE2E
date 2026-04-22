@@ -7,7 +7,6 @@ import is.hi.messagee2e.persistence.entities.User;
 import is.hi.messagee2e.persistence.repositories.UserRepository;
 import is.hi.messagee2e.security.JwtService;
 import is.hi.messagee2e.services.AuthenticationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,8 +14,8 @@ import org.springframework.stereotype.Service;
 
 /******************************************************************************
  * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing : 
+ * e-mail: ral9@hi.is
+ * Description: Implements the signup and login functions.
  *
  *****************************************************************************/
 @Service
@@ -38,8 +37,13 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
         this.authenticationManager = authenticationManager;
     }
 
-    public AuthenticationResponse signup(SignupRequest request){
-        if (userRepository.existsByUsername(request.getUsername())){
+    /**
+     * Registers a new user, stores their public key and returns a JWT token.
+     * @param request the signup request data
+     * @return an authentication response containing the JWT token.
+     */
+    public AuthenticationResponse signup(SignupRequest request) {
+        if (userRepository.existsByUsername(request.getUsername())) {
             throw new RuntimeException("Username already exists");
         }
 
@@ -54,7 +58,13 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
         String token = jwtService.generateToken(user.getUsername());
         return new AuthenticationResponse(token);
     }
-    public AuthenticationResponse login(LoginRequest request){
+
+    /**
+     * Authenticates a user's credentials and returns a JWT token.
+     * @param request the login request data
+     * @return an authentication response containing the JWT token
+     */
+    public AuthenticationResponse login(LoginRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),

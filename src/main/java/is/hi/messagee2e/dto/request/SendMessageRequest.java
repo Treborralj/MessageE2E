@@ -8,7 +8,7 @@ import lombok.Setter;
 /******************************************************************************
  * @author Róbert A. Jack
  * Tölvupóstur: ral9@hi.is
- * Lýsing : 
+ * Lýsing : DTO containing the encrypted message data and recipient information.
  *
  *****************************************************************************/
 @Getter
